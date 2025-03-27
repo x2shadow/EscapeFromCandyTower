@@ -18,13 +18,24 @@ namespace Platformer
             Debug.Log("IsStickyAvailable: "     + GP_Ads.IsStickyAvailable());  
         }
 
-        // Показать fullscreen
-        public void ShowFullscreen() => GP_Ads.ShowFullscreen(OnFullscreenStart, OnFullscreenClose);
+        public void ShowFullscreen()
+        {
+            if (GP_Ads.IsFullscreenAvailable())
+            {
+                GP_Ads.ShowFullscreen(OnFullscreenStart, OnFullscreenClose);
+            }
+        }
 
-        // Начался показ
-        private void OnFullscreenStart() => Debug.Log("ON FULLSCREEN START");
+        private void OnFullscreenStart()
+        {
+            Debug.Log("ON FULLSCREEN START");
+            AudioManager.Instance.MuteForAd();
+        }
 
-        // Закончился показ
-        private void OnFullscreenClose(bool success) => Debug.Log("ON FULLSCREEN CLOSE: " + success);
+        private void OnFullscreenClose(bool success)
+        {
+            Debug.Log("ON FULLSCREEN CLOSE: " + success);
+            AudioManager.Instance.UnmuteAfterAd();
+        }
     }
 }

@@ -24,6 +24,9 @@ namespace Platformer
         public AudioClip soundJump;  
         public AudioClip soundLose;  
         public AudioClip soundWin;
+
+        bool adMutedMusic = false;
+        bool adMutedSound = false;
         
         void Awake()
         {
@@ -74,6 +77,52 @@ namespace Platformer
 
             PlayerPrefs.SetFloat(SoundVolumeKey, volume); 
             PlayerPrefs.Save(); 
+        }
+
+        public void MuteForAd()
+        {
+            float musicDB;
+            audioMixer.GetFloat(MusicVolumeKey, out musicDB);
+            
+            if (musicDB > -80f)
+            {
+                float currentmusicVolume = Mathf.Pow(10, musicDB / 20);
+                PlayerPrefs.SetFloat("LastMusicVolume", currentmusicVolume); 
+                PlayerPrefs.Save();
+                adMutedMusic = true;
+                SetMusicVolume(0);
+            }
+
+            float soundDB;
+            audioMixer.GetFloat(SoundVolumeKey, out soundDB);
+            
+            if (soundDB > -80f)
+            {
+                float currentSoundVolume = Mathf.Pow(10, soundDB / 20);
+                PlayerPrefs.SetFloat("LastSoundVolume", currentSoundVolume); 
+                PlayerPrefs.Save();
+                adMutedSound = true;
+                SetSoundVolume(0);
+            }
+        }
+
+        public void UnmuteAfterAd()
+        {
+            if (adMutedMusic)
+            {
+                float lastMusicVolume = PlayerPrefs.GetFloat("LastMusicVolume", 0.5f);
+                SetMusicVolume(lastMusicVolume);
+                adMutedMusic = false;
+                Debug.Log("LastMusicVolume: " + lastMusicVolume);
+            }
+
+            if (adMutedSound)
+            {
+                float lastSoundVolume = PlayerPrefs.GetFloat("LastSoundVolume", 0.5f);
+                SetSoundVolume(lastSoundVolume);
+                adMutedSound = false;
+                Debug.Log("LastSoundVolume: " + lastSoundVolume);
+            }
         }
 
         public void PlaySoundCheckpoint()

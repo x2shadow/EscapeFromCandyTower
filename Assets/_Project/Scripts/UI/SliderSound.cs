@@ -9,15 +9,22 @@ namespace Platformer
     {
         private const string SoundVolumeKey = "SoundVolume";
 
+        Slider slider;
+
         void Start()
         {
-            Slider slider = GetComponent<Slider>();
+            slider = GetComponent<Slider>();
 
             float savedVolume = PlayerPrefs.GetFloat(SoundVolumeKey, 0.5f);
             slider.value = savedVolume;
 
             slider.onValueChanged.AddListener(AudioManager.Instance.SetSoundVolume);
             AudioManager.Instance.SetSoundVolume(savedVolume);
+        }
+
+        public void Refresh()
+        {
+            slider.value = PlayerPrefs.GetFloat("LastSoundVolume", 0.5f);
         }
     }
 }
