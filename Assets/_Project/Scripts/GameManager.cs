@@ -100,6 +100,28 @@ namespace Platformer
 
         public void CloseLose()
         {
+            if (GP_Ads.IsFullscreenAvailable())
+            {
+                GP_Ads.ShowFullscreen(OnFullscreenStart, OnFullscreenClose);
+            }
+            else
+            {
+                canvasLose.SetActive(false);            
+                isPaused = false;
+                cameraManager.OnEnableMouseControlCamera();
+            }
+        }
+
+        void OnFullscreenStart()
+        {
+            Debug.Log("ON FULLSCREEN START");
+            AudioManager.Instance.MuteForAd();
+        }
+
+        void OnFullscreenClose(bool success)
+        {
+            Debug.Log("ON FULLSCREEN CLOSE: " + success);
+            AudioManager.Instance.UnmuteAfterAd();
             canvasLose.SetActive(false);            
             isPaused = false;
             cameraManager.OnEnableMouseControlCamera();
